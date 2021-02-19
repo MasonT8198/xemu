@@ -68,6 +68,97 @@
 #define floatx80_ln2_d make_floatx80(0x3ffe, 0xb17217f7d1cf79abLL)
 #define floatx80_pi_d make_floatx80(0x4000, 0xc90fdaa22168c234LL)
 
+#if defined(XBOX) && defined(__x86_64__)
+#define HARD_FPU_HACKS 1
+#define floatx80_add        floatx80_add__hard
+#define floatx80_sub        floatx80_sub__hard
+#define floatx80_mul        floatx80_mul__hard
+#define floatx80_div        floatx80_div__hard
+#define floatx80_compare    floatx80_compare__hard
+#define float32_to_floatx80 float32_to_floatx80__hard
+#define floatx80_to_float32 floatx80_to_float32__hard
+#define float64_to_floatx80 float64_to_floatx80__hard
+#define floatx80_to_float64 floatx80_to_float64__hard
+#define int32_to_floatx80   int32_to_floatx80__hard
+
+static inline
+floatx80 floatx80_add__hard(floatx80 a, floatx80 b, float_status *status)
+{
+    return (floatx80){ .fval = a.fval + b.fval };
+}
+
+static inline
+floatx80 floatx80_sub__hard(floatx80 a, floatx80 b, float_status *status)
+{
+    return (floatx80){ .fval = a.fval - b.fval };
+}
+
+static inline
+floatx80 floatx80_mul__hard(floatx80 a, floatx80 b, float_status *status)
+{
+    return (floatx80){ .fval = a.fval * b.fval };
+}
+
+static inline
+floatx80 floatx80_div__hard(floatx80 a, floatx80 b, float_status *status)
+{
+    /* FIXME: Exceptions */
+    return (floatx80){ .fval = a.fval / b.fval };
+}
+
+static inline
+FloatRelation floatx80_compare__hard(floatx80 a, floatx80 b, float_status *status)
+{
+    if (a.fval < b.fval) return float_relation_less;
+    if (a.fval > b.fval) return float_relation_greater;
+    if (a.fval == b.fval) return float_relation_equal;
+    return float_relation_unordered;
+}
+
+static inline
+floatx80 float32_to_floatx80__hard(float32 val, float_status *status)
+{
+    return (floatx80){ .fval = *(float *)&val };
+}
+
+static inline
+float32 floatx80_to_float32__hard(floatx80 a, float_status *status)
+{
+    union {
+        float32 f32;
+        float f;
+    } x;
+
+    x.f = a.fval;
+    return x.f32;
+}
+
+static inline
+floatx80 float64_to_floatx80__hard(float64 val, float_status *status)
+{
+    return (floatx80){ .fval = *(double *)&val };
+}
+
+static inline
+float64 floatx80_to_float64__hard(floatx80 a, float_status *status)
+{
+    union {
+        float64 f64;
+        double d;
+    } x;
+
+    x.d = a.fval;
+    return x.f64;
+}
+
+static inline
+floatx80 int32_to_floatx80__hard(int32_t a, float_status *status)
+{
+    return (floatx80){ .fval = a };
+}
+
+#endif
+
 #if !defined(CONFIG_USER_ONLY)
 static qemu_irq ferr_irq;
 
@@ -154,6 +245,7 @@ static inline floatx80 double_to_floatx80(CPUX86State *env, double a)
     return float64_to_floatx80(u.f64, &env->fp_status);
 }
 
+#ifndef HARD_FPU_HACKS
 static void fpu_set_exception(CPUX86State *env, int mask)
 {
     env->fpus |= mask;
@@ -161,6 +253,7 @@ static void fpu_set_exception(CPUX86State *env, int mask)
         env->fpus |= FPUS_SE | FPUS_B;
     }
 }
+#endif
 
 static inline uint8_t save_exception_flags(CPUX86State *env)
 {
@@ -171,6 +264,7 @@ static inline uint8_t save_exception_flags(CPUX86State *env)
 
 static void merge_exception_flags(CPUX86State *env, uint8_t old_flags)
 {
+#ifndef HARD_FPU_HACKS
     uint8_t new_flags = get_float_exception_flags(&env->fp_status);
     float_raise(old_flags, &env->fp_status);
     fpu_set_exception(env,
@@ -180,6 +274,7 @@ static void merge_exception_flags(CPUX86State *env, uint8_t old_flags)
                        (new_flags & float_flag_underflow ? FPUS_UE : 0) |
                        (new_flags & float_flag_inexact ? FPUS_PE : 0) |
                        (new_flags & float_flag_input_denormal ? FPUS_DE : 0)));
+#endif
 }
 
 static inline floatx80 helper_fdiv(CPUX86State *env, floatx80 a, floatx80 b)
