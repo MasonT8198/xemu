@@ -7,13 +7,6 @@
 regenerate:
 	for s in 16 24 32 48 64 128 256 512; \
 	do \
-	    inkscape --without-gui --export-png=qemu_$${s}x$${s}.png \
-		--export-width=$$s --export-height=$$s qemu.svg ; \
-	done
-	convert qemu_32x32.png qemu_32x32.bmp
-
-	for s in 16 24 32 48 64 128 256 512; \
-	do \
 	    inkscape --without-gui --export-png=xemu_$${s}x$${s}.png \
 		--export-width=$$s --export-height=$$s xemu.svg ; \
 	done
