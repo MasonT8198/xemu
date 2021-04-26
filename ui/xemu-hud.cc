@@ -1745,6 +1745,7 @@ static void ShowMainMenu()
             int rendering_scale = nv2a_get_surface_scale_factor() - 1;
             if (ImGui::Combo("Rendering Scale", &rendering_scale, "1x\0" "2x\0" "3x\0" "4x\0" "6x\0")) {
                 nv2a_set_surface_scale_factor(rendering_scale+1);
+                int nv2a_set_surface_scale_factor = rendering_scale;
             }
 
             if (ImGui::Combo("Scaling Mode", &scaling_mode, "Center\0Scale\0Stretch\0")) {
