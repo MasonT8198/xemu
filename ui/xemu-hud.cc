@@ -723,7 +723,7 @@ public:
         ImGui::Text("System Memory");
         ImGui::NextColumn();
         ImGui::SetNextItemWidth(ImGui::GetColumnWidth()*0.5);
-        if (ImGui::Combo("###mem", &memory_idx, "64 MiB\0" "128 MiB\0")) {
+        if (ImGui::Combo("###mem", &memory_idx, "64 MiB\0" "128 MiB\0" "256 MiB\0")) {
             dirty = true;
         }
         ImGui::NextColumn();
