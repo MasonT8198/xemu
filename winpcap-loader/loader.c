@@ -82,11 +82,13 @@ int pcap_load_library(void)
 	if (is_loaded) {
 		return 0;
 	}
-	
-	// Try to load packet.dll
-	HANDLE hwpcap = LoadLibrary("packet.dll");
+
+	HANDLE hwpcap = LoadLibrary("wpcap.dll");
 	if (hwpcap == NULL) {
-		return 1;
+		HANDLE hwpcap = LoadLibrary("packet.dll");
+		if ( hwpcap == NULL ) {
+			return 1;
+		}
 	}
 
 	#define LOAD_FN(fname) do {\
