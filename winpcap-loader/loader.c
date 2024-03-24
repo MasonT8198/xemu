@@ -84,6 +84,7 @@ int pcap_load_library(void)
 	}
 
 	HANDLE hwpcap = LoadLibrary("wpcap.dll");
+	// Try to load packet.dll
 	HANDLE hwpcap = LoadLibrary("packet.dll");
 	if (hwpcap == NULL) {
 		return 1;
