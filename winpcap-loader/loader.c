@@ -84,9 +84,13 @@ int pcap_load_library(void)
 	}
 
 	HANDLE hwpcap = LoadLibrary("wpcap.dll");
-	if (hwpcap == NULL) {
-		return 1;
-	}
+    if (hwpcap == NULL) {
+        hwpcap = LoadLibrary("packet.dll");
+        if (hwpcap == NULL) {
+            return 1;
+        }
+    }
+
 
 	#define LOAD_FN(fname) do {\
 		void *p = (void*)GetProcAddress(hwpcap, stringify(fname)); \
