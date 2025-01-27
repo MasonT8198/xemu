@@ -865,15 +865,6 @@ static bool check_surface_to_texture_compatiblity(const SurfaceBinding *surface,
         return false;
     }
 
-    // Additional checks for color formats
-    int surface_fmt = surface->shape.color_format;
-    int texture_fmt = shape->color_format;
-
-    // FIXME: Add robust handling for different color formats
-    if (surface_fmt != texture_fmt) {
-        return false;
-    }
-
     int surface_fmt = surface->shape.color_format;
     int texture_fmt = shape->color_format;
 
@@ -927,6 +918,11 @@ static bool check_surface_to_texture_compatiblity(const SurfaceBinding *surface,
     trace_nv2a_pgraph_surface_texture_compat_failed(
         surface_fmt, texture_fmt);
     return false;
+
+    // FIXME: Add robust handling for different color formats
+    if (surface_fmt != texture_fmt) {
+        return false;
+    }
 }
 
 static void create_dummy_texture(PGRAPHState *pg)
