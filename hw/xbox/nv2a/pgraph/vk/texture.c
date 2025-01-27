@@ -857,7 +857,7 @@ static void copy_surface_to_texture(PGRAPHState *pg, SurfaceBinding *surface,
 static bool check_surface_to_texture_compatiblity(const SurfaceBinding *surface,
                                                   const TextureShape *shape)
 {
-    // FIXME: Better checks/handling on formats and surface-texture compatibility
+    // FIXME: Better checks/handling on formats and surface-texture compat
 
     if ((!surface->swizzle && surface->pitch != shape->pitch) ||
         surface->width != shape->width ||
