@@ -23,6 +23,11 @@ jobs:
       uses: actions/checkout@v4
       with:
         fetch-depth: 0
+    - name: Cache Meson dependencies
+      uses: actions/cache@v4
+      with:
+        path: /path/to/meson/cache
+        key: meson-cache-${{ runner.os }}-${{ hashFiles('**/meson.build') }
     - name: Install dependencies
       run: sudo apt-get install meson
     # On push to master, increment patch version and create a new tag on release
@@ -94,7 +99,9 @@ jobs:
       with:
         path: /tmp/xemu-ccache
         key: cache-wincross-${{ runner.os }}-${{ matrix.arch }}-${{ matrix.configuration }}-${{ github.sha }}
-        restore-keys: cache-wincross-${{ runner.os }}-${{ matrix.arch }}-${{ matrix.configuration }}-
+        restore-keys: |
+          cache-wincross-${{ runner.os }}-${{ matrix.arch }}-${{ matrix.configuration }}-
+          cache-wincross-${{ runner.os }}-${{ matrix.arch }}-
     - name: Pull Docker image
       run: docker pull $DOCKER_IMAGE_NAME
     - name: Compile
@@ -200,7 +207,9 @@ jobs:
       with:
         path: /tmp/xemu-ccache
         key: cache-${{ runner.os }}-${{ matrix.arch }}-${{ matrix.configuration }}-${{ github.sha }}
-        restore-keys: cache-${{ runner.os }}-${{ matrix.arch }}-${{ matrix.configuration }}-
+        restore-keys: |
+          cache-${{ runner.os }}-${{ matrix.arch }}-${{ matrix.configuration }}-
+          cache-${{ runner.os }}-${{ matrix.arch }}-
     - name: Download source package
       uses: actions/download-artifact@v4
       with:
