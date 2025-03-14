@@ -13,7 +13,7 @@
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wredundant-decls"
 
-#include <SDL3/SDL_syswm.h>
+
 
 #pragma GCC diagnostic pop
 
