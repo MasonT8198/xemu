@@ -55,6 +55,7 @@ jobs:
         name: src.tar.gz
         path: src.tar.gz
 
+<--
   Windows:
     name: Build for Windows (${{ matrix.arch }}, ${{ matrix.configuration }}) on Ubuntu
     runs-on: ubuntu-latest
@@ -161,7 +162,7 @@ jobs:
       with:
         name: ${{ matrix.artifact_name }}-pdb
         path: dist
-
+-->
   Ubuntu:
     name: Build for Ubuntu (${{matrix.arch}}, ${{ matrix.configuration }})
     runs-on: ${{ matrix.runs-on }}
@@ -181,6 +182,7 @@ jobs:
           artifact_name: xemu-ubuntu-x86_64-release
           artifact_filename: xemu-ubuntu-x86_64-release.tgz
           runs-on: ubuntu-24.04
+        <--
         - arch: aarch64
           configuration: Debug
           build_param: --debug
@@ -193,6 +195,7 @@ jobs:
           artifact_name: xemu-ubuntu-aarch64-release
           artifact_filename: xemu-ubuntu-aarch64-release.tgz
           runs-on: ubuntu-24.04-arm
+        -->
     steps:
     - name: Initialize compiler cache
       id: cache
@@ -278,6 +281,7 @@ jobs:
         name: ${{ matrix.artifact_name }}
         path: ${{ matrix.artifact_filename }}
 
+<--
   macOS:
     name: Build for macOS (${{ matrix.arch }}, ${{ matrix.configuration }})
     runs-on: macOS-14
@@ -394,7 +398,7 @@ jobs:
       with:
         name: xemu-macos-universal-${{ matrix.configuration }}
         path: xemu-macos-universal-${{ matrix.configuration }}.zip
-
+-->
   Release:
     if: github.event_name == 'push' && (github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/v'))
     runs-on: ubuntu-latest
