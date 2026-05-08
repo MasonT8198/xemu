@@ -266,8 +266,10 @@ void xemu_input_init(void)
         SDL_SetHint(SDL_HINT_JOYSTICK_ALLOW_BACKGROUND_EVENTS, "1");
     }
 
-    if (!SDL_Init(SDL_INIT_GAMEPAD)) {
-        fprintf(stderr, "Failed to initialize SDL gamepad subsystem: %s\n", SDL_GetError());
+    // In SDL3, the gamepad subsystem requires the joystick subsystem to be initialized first
+    // for proper controller enumeration and naming (especially important for Dualsense)
+    if (!SDL_Init(SDL_INIT_JOYSTICK | SDL_INIT_GAMEPAD)) {
+        fprintf(stderr, "Failed to initialize SDL joystick/gamepad subsystem: %s\n", SDL_GetError());
         exit(1);
     }
 
